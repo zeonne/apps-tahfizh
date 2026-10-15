@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Tahfizh Pro - Monitoring Hafalan",
+  "short_name": "Tahfizh Pro",
+  "description": "Monitoring hafalan Qur'an: setoran, murojaah, perizinan, dan laporan bulanan.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
