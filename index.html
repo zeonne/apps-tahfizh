@@ -90,7 +90,7 @@
     if (d.t === 'tahfizh-get') { e.source.postMessage({ t: 'tahfizh-data', items: read() }, e.origin); }
     else if (d.t === 'tahfizh-store' && /^app_/.test(d.k || '')) {
       var o = read();
-      if (d.op === 'set') o[d.k] = String(d.v).slice(0, 500); else delete o[d.k];
+      if (d.op === 'set') o[d.k] = String(d.v).slice(0, d.k === 'app_queue' ? 400000 : 500); else delete o[d.k];
       write(o);
     }
   });
