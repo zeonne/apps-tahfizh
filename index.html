@@ -13,6 +13,11 @@
   <meta name="apple-mobile-web-app-title" content="Tahfizh Pro">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script src="api.js"></script>
+  <style>html.has-session #view-login{display:none!important}</style>
+  <script>
+    /* Sudah login? Jangan tampilkan layar login sekejap pun. Dilepas otomatis begitu aplikasi siap. */
+    try { if (localStorage.getItem('app_token')) { document.documentElement.classList.add('has-session'); setTimeout(function(){ document.documentElement.classList.remove('has-session'); }, 4000); } } catch (e) {}
+  </script>
   <title>Tahfizh Pro - Monitoring Hafalan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -2409,6 +2414,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
           document.getElementById('view-login').classList.remove('hidden');
           document.getElementById('view-dashboard').classList.add('hidden');
         }
+        document.documentElement.classList.remove('has-session');
       });
     });
 
