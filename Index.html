@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#064e3b">
+  <meta name="description" content="Monitoring hafalan Qur'an: setoran, murojaah, perizinan, dan laporan bulanan.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Tahfizh Pro">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="api.js"></script>
   <title>Tahfizh Pro - Monitoring Hafalan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -597,7 +608,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
             <div class="text-sm font-semibold text-white truncate" id="user-name-display">User</div>
             <div class="text-xs text-emerald-300 capitalize" id="user-role-display">Role</div>
           </div>
-          <button onclick="handleLogout()" title="Keluar"
+          <button onclick="confirmLogout()" title="Keluar"
             class="user-panel-btn flex items-center gap-1.5 text-xs text-red-300 hover:text-red-100 transition flex-shrink-0 p-1">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span class="sidebar-text">Keluar</span>
@@ -2863,20 +2874,10 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
       if(!(parseInt(formData.ayat_dari, 10) >= 1) || !(parseInt(formData.ayat_sampai, 10) >= 1)) { showToast('Ayat harus berupa angka 1 atau lebih!', 'warning'); return; }
       if(!formData.surat.includes(' - ') && parseInt(formData.ayat_dari, 10) > parseInt(formData.ayat_sampai, 10)) { showToast('Ayat awal tidak boleh lebih besar dari ayat akhir!', 'warning'); return; }
 
-      showLoading(true);
-      google.script.run
-        .withSuccessHandler(res => {
-          showLoading(false);
-          if(res.status === 'success') {
-            showToast(res.message, 'success');
-            e.target.reset();
-            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors:['#10b981','#d97706','#34d399'] });
-          } else {
-            showToast(res.message, 'error');
-          }
-        })
-        .withFailureHandler(err => { showLoading(false); showToast('Gagal: '+err, 'error'); })
-        .addSetoran(appState.token, formData);
+      submitQueued('setoran', formData, res => {
+        e.target.reset();
+            if(res) confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors:['#10b981','#d97706','#34d399'] });
+      });
     }
 
     // === SUBMIT MUROJAAH ===
@@ -2906,20 +2907,10 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
       if(!(parseInt(formData.ayat_dari, 10) >= 1) || !(parseInt(formData.ayat_sampai, 10) >= 1)) { showToast('Ayat harus berupa angka 1 atau lebih!', 'warning'); return; }
       if(!formData.surat.includes(' - ') && parseInt(formData.ayat_dari, 10) > parseInt(formData.ayat_sampai, 10)) { showToast('Ayat awal tidak boleh lebih besar dari ayat akhir!', 'warning'); return; }
 
-      showLoading(true);
-      google.script.run
-        .withSuccessHandler(res => {
-          showLoading(false);
-          if(res.status === 'success') {
-            showToast(res.message, 'success');
-            e.target.reset();
-            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors:['#10b981','#d97706','#34d399'] });
-          } else {
-            showToast(res.message, 'error');
-          }
-        })
-        .withFailureHandler(err => { showLoading(false); showToast('Gagal: '+err, 'error'); })
-        .addMurojaah(appState.token, formData);
+      submitQueued('murojaah', formData, res => {
+        e.target.reset();
+            if(res) confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors:['#10b981','#d97706','#34d399'] });
+      });
     }
 
     // === INPUT PERIZINAN ===
@@ -2962,20 +2953,10 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         keterangan: e.target.keterangan.value
       };
 
-      showLoading(true);
-      google.script.run
-        .withSuccessHandler(res => {
-          showLoading(false);
-          if(res.status === 'success') {
-            showToast(res.message, 'success');
-            e.target.reset();
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors:['#10b981','#f59e0b','#34d399'] });
-          } else {
-            showToast(res.message, 'error');
-          }
-        })
-        .withFailureHandler(err => { showLoading(false); showToast('Gagal: '+err, 'error'); })
-        .addPerizinan(appState.token, formData);
+      submitQueued('perizinan', formData, res => {
+        e.target.reset();
+            if(res) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors:['#10b981','#f59e0b','#34d399'] });
+      });
     }
 
     // === RIWAYAT PERIZINAN ===
@@ -5998,6 +5979,170 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     });
     doc.save('Laporan_Bulanan_'+el('lb-kelas').value.replace(/[^\w-]+/g,'_')+'_'+el('lb-bulan').value+'.pdf');
   };
+})();
+</script>
+<script>
+/* Antrean offline: input setoran, murojaah, dan perizinan disimpan di HP lalu dikirim otomatis saat online */
+(function(){
+  const KEY='app_queue', MAX_AGE=30*24*3600*1000, BATCH=5;
+  const E=v=>escHtml(v==null?'':v);
+  const me=()=>appState.username||'';
+  const TYPE={setoran:'Setoran',murojaah:'Murojaah',perizinan:'Perizinan'};
+  const load=()=>{try{const a=JSON.parse(AppStore.get(KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}};
+  const mine=()=>load().filter(i=>i.owner===me());
+  let syncing=false,warnedLogin=false;
+
+  function save(a){AppStore.set(KEY,JSON.stringify(a));ui()}
+  function purge(){ // data lebih dari 30 hari dibuang (server juga menolaknya)
+    const a=load(),k=a.filter(i=>Date.now()-i.ts<=MAX_AGE);
+    if(k.length!==a.length)save(k);
+  }
+  const cid=()=>'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  const siswaNama=n=>{const s=(appState.siswaList||[]).find(x=>String(x.nisn)===String(n));return s?s.nama:'NISN '+n};
+  const labelOf=(t,f)=>t==='perizinan'?(f.tipe_izin+' · Halaqoh '+f.halaqoh):(f.surat+' ayat '+f.ayat_dari+'-'+f.ayat_sampai);
+
+  function enqueue(type,form){
+    const it={cid:cid(),type:type,ts:Date.now(),owner:me(),form:form,nama:form.nama_siswa||siswaNama(form.nisn),label:labelOf(type,form),status:'pending'};
+    const a=load();a.push(it);save(a);return it;
+  }
+  function removeCid(c){save(load().filter(i=>i.cid!==c))}
+
+  function callSync(items){
+    return new Promise((resolve,reject)=>{
+      let done=false;
+      const t=setTimeout(()=>{if(!done){done=true;reject(new Error('timeout'))}},25000);
+      google.script.run
+        .withSuccessHandler(r=>{if(done)return;done=true;clearTimeout(t);resolve(r)})
+        .withFailureHandler(e=>{if(done)return;done=true;clearTimeout(t);reject(e)})
+        .syncPending(appState.token,items.map(i=>({cid:i.cid,type:i.type,ts:i.ts,form:i.form})));
+    });
+  }
+  function apply(results){
+    const by={};(results||[]).forEach(r=>by[r.cid]=r);
+    const out=load().filter(it=>{
+      const r=by[it.cid];if(!r)return true;
+      if(r.status==='success'||r.status==='duplicate')return false;
+      if(r.retry)return true;
+      it.status='failed';it.err=r.message||'Gagal';return true;
+    });
+    save(out);
+  }
+
+  // Kirim semua data tertunda. manual=true: data yang gagal ikut dicoba lagi.
+  async function syncAll(manual){
+    if(syncing||!appState.token||navigator.onLine===false)return;
+    syncing=true;ui();
+    const start=mine().length;
+    try{
+      purge();
+      if(manual){save(load().map(i=>{if(i.owner===me()&&i.status==='failed'){i.status='pending';delete i.err}return i}))}
+      const todo=mine().filter(i=>i.status==='pending');
+      while(todo.length){
+        const batch=todo.splice(0,BATCH);
+        let r;
+        try{r=await callSync(batch)}catch(e){break}
+        if(!r||r.status!=='success'){
+          if(!warnedLogin){warnedLogin=true;showToast((r&&r.message==='Unauthorized')?'Sesi berakhir. Masuk lagi agar data tertunda terkirim.':((r&&r.message)||'Gagal mengirim data tertunda'),'warning')}
+          break;
+        }
+        apply(r.results);
+      }
+    }finally{syncing=false;ui()}
+    const sent=start-mine().length;
+    if(sent>0)showToast(sent+' data tertunda berhasil dikirim.','success');
+  }
+  window.syncPendingNow=()=>syncAll(true);
+
+  // Dipakai tiga formulir input. onOk(res): res=null berarti disimpan di antrean.
+  window.submitQueued=async function(type,form,onOk){
+    const it=enqueue(type,form);
+    const queued=msg=>{showLoading(false);showToast(msg,'warning');onOk(null)};
+    if(navigator.onLine===false){queued('Tidak ada internet. Data disimpan di HP dan dikirim otomatis saat online.');return}
+    showLoading(true);
+    let r;
+    try{r=await callSync([it])}catch(e){queued('Koneksi lambat atau terputus. Data disimpan di HP dan dikirim otomatis saat online.');return}
+    showLoading(false);
+    if(!r||r.status!=='success'){removeCid(it.cid);showToast((r&&r.message)||'Gagal menyimpan','error');return}
+    const res=r.results[0];
+    if(res.status==='success'||res.status==='duplicate'){removeCid(it.cid);showToast(res.message,'success');onOk(res);return}
+    if(res.retry){queued('Server sedang sibuk. Data disimpan di HP dan dikirim otomatis.');return}
+    removeCid(it.cid);showToast(res.message,'error'); // gagal validasi: tidak masuk antrean, isian tetap di formulir
+  };
+
+  // ---- tampilan ----
+  const css=document.createElement('style');
+  css.textContent='#lq-pill{position:fixed;right:14px;bottom:14px;z-index:9000;display:none;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#92400e;color:#fff;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer;border:0}#lq-pill.show{display:flex}#lq-pill.off{background:#374151}#lq-pill.ok{background:#047857}.lq-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e5e7eb;font-size:13px}.lq-bd{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ecfdf5;color:#065f46;margin-right:6px}.lq-bd.f{background:#fee2e2;color:#991b1b}.lq-list{max-height:52vh;overflow:auto}';
+  document.head.appendChild(css);
+  const pill=document.createElement('button');pill.id='lq-pill';pill.type='button';document.body.appendChild(pill);
+  pill.addEventListener('click',()=>openQueue());
+  function ui(){
+    const n=appState.token?mine().length:0,off=navigator.onLine===false;
+    if(!n&&!off){pill.className='';return}
+    pill.className='show'+(syncing?' ok':(off?' off':''));
+    pill.innerHTML=(syncing?'<i class="fa-solid fa-rotate fa-spin"></i> Mengirim…':(off?'<i class="fa-solid fa-wifi"></i> Offline':'<i class="fa-solid fa-clock"></i> Menunggu'))+(n?' · '+n+' data':'');
+    if(document.querySelector('.em-overlay.open #lq-list'))renderList();
+  }
+  const fmt=ts=>{const d=new Date(ts),p2=x=>String(x).padStart(2,'0');return p2(d.getDate())+'/'+p2(d.getMonth()+1)+' '+p2(d.getHours())+':'+p2(d.getMinutes())};
+  function renderList(){
+    const box=document.getElementById('lq-list');if(!box)return;
+    const a=mine().slice().reverse();
+    box.innerHTML=a.length?a.map(i=>`<div class="lq-row"><div><span class="lq-bd${i.status==='failed'?' f':''}">${i.status==='failed'?'GAGAL':'MENUNGGU'}</span><b>${E(TYPE[i.type])}</b> · ${E(i.nama)}<div style="color:#6b7280;margin-top:2px">${E(i.label)} · ${fmt(i.ts)}</div>${i.err?`<div style="color:#b91c1c;margin-top:2px">${E(i.err)}</div>`:''}</div><button type="button" class="em-btn del" title="Hapus" onclick="lqHapus('${E(i.cid)}')"><i class="fa-solid fa-trash"></i></button></div>`).join(''):'<p class="em-txt">Tidak ada data tertunda.</p>';
+    const b=document.getElementById('lq-send');if(b)b.disabled=syncing||navigator.onLine===false||!a.length;
+  }
+  function openQueue(){
+    emShow(emHead('Data menunggu dikirim','Dikirim otomatis saat ada internet. Data lebih dari 30 hari dihapus otomatis.')+'<div class="lq-list" id="lq-list"></div><div class="em-foot"><button type="button" class="btn-secondary" onclick="emClose()">Tutup</button><button type="button" class="btn-primary" id="lq-send">Kirim sekarang</button></div>');
+    document.getElementById('lq-send').onclick=()=>syncAll(true);
+    renderList();
+  }
+  window.lqHapus=function(c){if(confirm('Hapus data ini dari antrean? Data tidak akan dikirim ke server.'))removeCid(c)};
+
+  // ---- keluar: peringatan bila masih ada data tertunda ----
+  window.confirmLogout=function(){
+    const n=mine().length;
+    if(!n){handleLogout();return}
+    emShow(emHead('Masih ada '+n+' data belum terkirim','Periksa sebelum keluar')+'<p class="em-txt">Kalau keluar sekarang, data ini <b>akan dihapus</b> dari HP dan tidak akan tersimpan di server.</p><div class="em-foot"><button type="button" class="btn-secondary" onclick="emClose()">Batal</button><button type="button" class="btn-primary" id="lq-s2">Kirim dulu</button><button type="button" class="em-do" id="lq-out">Tetap keluar</button></div>');
+    document.getElementById('lq-out').onclick=()=>{save(load().filter(i=>i.owner!==me()));emClose();handleLogout()};
+    document.getElementById('lq-s2').onclick=async()=>{
+      emClose();
+      if(navigator.onLine===false){showToast('Belum ada internet. Data belum bisa dikirim.','warning');return}
+      showLoading(true);await syncAll(true);showLoading(false);
+      if(mine().length){showToast('Sebagian data belum terkirim. Periksa daftar data tertunda.','warning');openQueue()}else handleLogout();
+    };
+  };
+
+  // ---- pemicu pengiriman otomatis ----
+  window.addEventListener('online',()=>{ui();syncAll(false)});
+  window.addEventListener('offline',ui);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncAll(false)});
+  setInterval(()=>{if(mine().some(i=>i.status==='pending'))syncAll(false);else ui()},30000);
+  setTimeout(()=>{purge();ui();syncAll(false)},3500);
+})();
+</script>
+<script>
+/* PWA: daftarkan service worker + ajakan memasang aplikasi */
+(function(){
+  if ('serviceWorker' in navigator) window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  if (standalone) return;
+  var DAY=24*3600*1000;
+  function snoozed(k){ try { return Date.now()-Number(localStorage.getItem(k)||0) < 7*DAY; } catch(e){ return false; } }
+  function snooze(k){ try { localStorage.setItem(k, String(Date.now())); } catch(e){} }
+  function bar(html, onGo, key){
+    var d=document.createElement('div');
+    d.style.cssText='position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9400;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:#fff;color:#1f2937;box-shadow:0 12px 36px rgba(0,0,0,.28);font:13.5px/1.45 system-ui,sans-serif';
+    d.innerHTML='<span style="flex:1">'+html+'</span>'+(onGo?'<button id="pwa-go" style="border:0;background:#10b981;color:#fff;font-weight:700;border-radius:10px;padding:9px 14px;cursor:pointer">Pasang</button>':'')+'<button id="pwa-x" style="border:0;background:#f3f4f6;color:#6b7280;border-radius:10px;padding:9px 11px;cursor:pointer" aria-label="Tutup">&#10005;</button>';
+    document.body.appendChild(d);
+    d.querySelector('#pwa-x').onclick=function(){ d.remove(); snooze(key); };
+    if(onGo) d.querySelector('#pwa-go').onclick=function(){ d.remove(); onGo(); };
+  }
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); if (snoozed('pwa_snooze')) return;
+    bar('<b>Pasang Tahfizh Pro</b> di layar utama agar terbuka seperti aplikasi, termasuk saat offline.', function(){ e.prompt(); }, 'pwa_snooze');
+  });
+  var ua=navigator.userAgent||'';
+  var isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  var isSafari=/Safari/.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  if (isIOS&&isSafari&&!snoozed('ios_snooze')) window.addEventListener('load', function(){ setTimeout(function(){ bar('<b>Pasang di iPhone:</b> ketuk <b>Bagikan</b> lalu <b>Tambah ke Layar Utama</b>.', null, 'ios_snooze'); }, 2500); });
 })();
 </script>
 </body>
