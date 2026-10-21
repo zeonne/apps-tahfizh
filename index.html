@@ -909,14 +909,14 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
               <!-- Row 4: Penilaian -->
               <div class="p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 mb-6">
                 <p class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4"><i class="fa-solid fa-star mr-1"></i>Penilaian Bacaan</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   <div>
                     <label>Target Perhalaqoh</label>
                     <select onchange="updatePoinPreview(false)" name="status" id="select-kelancaran" class="form-input"></select>
                   </div>
                   <div>
                     <label>Nilai Makhraj & Tajwid</label>
-                    <select onchange="updatePoinPreview(false)" name="nilai" id="select-nilai" class="form-input"></select>
+                    <select onchange="updatePoinPreview(false)" name="nilai" id="select-nilai" class="form-input"></select></div><div><label>KELANCARAN</label><select onchange="updatePoinPreview(false)" name="kelancaran2" id="select-kelancaran2" class="form-input"></select>
                   </div>
                 </div>
               </div>
@@ -1054,14 +1054,14 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
               <!-- Row 4: Penilaian -->
               <div class="p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 mb-6">
                 <p class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-4"><i class="fa-solid fa-star mr-1"></i>Penilaian Bacaan</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   <div>
                     <label>Target Perhalaqoh</label>
                     <select onchange="updatePoinPreview(true)" name="status" id="murojaah-select-kelancaran" class="form-input"></select>
                   </div>
                   <div>
                     <label>Nilai Makhraj & Tajwid</label>
-                    <select onchange="updatePoinPreview(true)" name="nilai" id="murojaah-select-nilai" class="form-input"></select>
+                    <select onchange="updatePoinPreview(true)" name="nilai" id="murojaah-select-nilai" class="form-input"></select></div><div><label>KELANCARAN</label><select onchange="updatePoinPreview(true)" name="kelancaran2" id="murojaah-select-kelancaran2" class="form-input"></select>
                   </div>
                 </div>
               </div>
@@ -1206,6 +1206,27 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
 
           </div>
 
+          <div class="page-card overflow-hidden mt-6">
+            <div class="flex items-center gap-3 p-5 border-b border-gray-100 bg-gradient-to-r from-sky-50 to-white">
+              <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-gauge-high text-white"></i></div>
+              <div class="flex-1">
+                <h3 class="font-bold text-gray-800">KELANCARAN</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Tingkat kelancaran bacaan. Poinnya ikut dijumlahkan ke total poin setoran dan murojaah</p>
+              </div>
+              <span id="badge-kelancaran2" class="badge bg-sky-100 text-sky-700">0 item</span>
+            </div>
+            <div class="p-4 space-y-2 min-h-[120px]" id="list-kelancaran2"></div>
+            <div class="p-4 border-t border-gray-100 bg-gray-50/60">
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3"><i class="fa-solid fa-plus mr-1"></i>Tambah Opsi KELANCARAN</p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div><label>Kode / Nama</label><input type="text" id="add-kel2-kode" class="form-input" placeholder="mis. Lancar" maxlength="20"></div>
+                <div><label>Deskripsi (opsional)</label><input type="text" id="add-kel2-desc" class="form-input" placeholder="mis. Tanpa terbata" maxlength="60"></div>
+                <div><label>Poin</label><div class="relative"><input type="number" id="add-kel2-poin" class="form-input pr-14" placeholder="mis. 10 atau -10"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-semibold">poin</span></div></div>
+              </div>
+              <button onclick="addKelancaran2()" class="btn-primary mt-3 py-2.5 px-5 text-sm"><i class="fa-solid fa-plus"></i> Tambah</button>
+            </div>
+          </div>
+
           <!-- Preview Card -->
           <div class="page-card p-6 mt-6">
             <div class="flex items-center gap-3 mb-5">
@@ -1224,7 +1245,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
               </div>
               <div>
                 <label>Nilai Makhraj &amp; Tajwid</label>
-                <select id="preview-nilai" class="form-input bg-white" disabled></select>
+                <select id="preview-nilai" class="form-input bg-white" disabled></select></div><div><label>KELANCARAN</label><select id="preview-kelancaran2" class="form-input bg-white" disabled></select>
               </div>
             </div>
             <p class="text-xs text-gray-400 mt-3"><i class="fa-solid fa-circle-info mr-1"></i>Perubahan otomatis tersimpan dan langsung berlaku di form Input Setoran.</p>
@@ -1288,6 +1309,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
                     <th class="hidden sm:table-cell">Ayat</th>
                     <th class="text-center">Nilai</th>
                     <th class="hidden md:table-cell">Target</th>
+                    <th class="hidden md:table-cell">Kelancaran</th>
                     <th class="hidden md:table-cell">Guru</th>
                     <th class="text-right pr-5">Poin</th>
                     <th class="text-right pr-5 staff-only">Aksi</th>
@@ -1383,6 +1405,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
                     <th class="hidden sm:table-cell">Ayat</th>
                     <th class="text-center">Nilai</th>
                     <th class="hidden md:table-cell">Target</th>
+                    <th class="hidden md:table-cell">Kelancaran</th>
                     <th class="hidden md:table-cell">Guru</th>
                     <th class="text-right pr-5">Poin</th>
                     <th class="text-right pr-5 staff-only">Aksi</th>
@@ -1871,11 +1894,11 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
           </div>
           <div class="page-card overflow-hidden"><div class="overflow-x-auto">
             <table class="data-table" style="min-width:1100px">
-              <thead><tr><th>No</th><th>Nama</th><th>Jml Hafalan</th><th>Surat Terakhir</th><th>Ziyadah (Hal)</th><th>Murojaah (Juz)</th><th>Hafalan</th><th>Bacaan</th><th>Tajwid</th><th>Etika</th><th>Kesungguhan</th><th>Jumlah</th><th>Rata-rata</th><th>Predikat</th><th>Izin</th><th>Catatan</th><th>Nilai</th></tr></thead>
-              <tbody id="lb-body"><tr><td colspan="17" class="text-center text-gray-400 py-8">Pilih bulan dan kelas, lalu tekan Tampilkan</td></tr></tbody>
+              <thead><tr><th>No</th><th>Nama</th><th>Jml Hafalan</th><th>Surat Terakhir</th><th>Kelancaran</th><th>Ziyadah (Hal)</th><th>Murojaah (Juz)</th><th>Hafalan</th><th>Bacaan</th><th>Tajwid</th><th>Etika</th><th>Kesungguhan</th><th>Jumlah</th><th>Rata-rata</th><th>Predikat</th><th>Izin</th><th>Catatan</th><th>Nilai</th></tr></thead>
+              <tbody id="lb-body"><tr><td colspan="18" class="text-center text-gray-400 py-8">Pilih bulan dan kelas, lalu tekan Tampilkan</td></tr></tbody>
             </table>
           </div></div>
-          <p class="text-xs text-gray-500 mt-3">Jml Hafalan = total halaman setoran bulan itu (20 halaman = 1 juz). Jumlah = Hafalan + Bacaan + Tajwid + Etika + Kesungguhan, Rata-rata = Jumlah ÷ 5. Predikat dari rata-rata: Mumtaz ≥ 90 · Jayyid Jiddan 80–89 · Jayyid 70–79 · Maqbul &lt; 70.</p>
+          <p class="text-xs text-gray-500 mt-3">Kelancaran = pilihan yang paling sering dipakai pada setoran bulan itu. Jml Hafalan = total halaman setoran bulan itu (20 halaman = 1 juz). Jumlah = Hafalan + Bacaan + Tajwid + Etika + Kesungguhan, Rata-rata = Jumlah ÷ 5. Predikat dari rata-rata: Mumtaz ≥ 90 · Jayyid Jiddan 80–89 · Jayyid 70–79 · Maqbul &lt; 70.</p>
         </div>
 
         <div id="page-perizinan-riwayat" class="page-content hidden p-6 md:p-8">
@@ -2871,6 +2894,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         halaman: e.target.halaman.value,
         status: e.target.status.value,
         nilai: e.target.nilai.value,
+        kelancaran2: e.target.kelancaran2 ? e.target.kelancaran2.value : '',
         catatan: e.target.catatan.value
       };
       const hv = normalizeHalamanSetoran(formData.halaman);
@@ -2904,6 +2928,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         halaman: e.target.halaman.value,
         status: e.target.status.value,
         nilai: e.target.nilai.value,
+        kelancaran2: e.target.kelancaran2 ? e.target.kelancaran2.value : '',
         catatan: e.target.catatan.value
       };
       const hv = normalizeHalaman(formData.halaman);
@@ -2993,6 +3018,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
 
       google.script.run
         .withSuccessHandler(list => {
+          if (list == null) showToast('Data perizinan tidak terbaca dari server. Periksa isi sheet perizinan.', 'error');
           allPerizinan = list || [];
           populateBulanDropdown('perizinan-riwayat-filter-bulan', allPerizinan);
           renderPerizinanStats();
@@ -3052,10 +3078,10 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     function buildPerizinanRows(list) {
       const map = new Map();
       list.forEach(r => {
-        const key = r.tanggal + '|' + r.nisn;
-        if(!map.has(key)) map.set(key, { tanggal:r.tanggal, hari:r.hari, nama:r.nama, kelas:r.kelas, Pagi:[], Dhuha:[], Sore:[] });
+        const key = r.tanggal + '|' + r.nisn + '|' + r.nama;
+        if(!map.has(key)) map.set(key, { tanggal:r.tanggal, hari:r.hari, nama:r.nama, kelas:r.kelas, Pagi:[], Dhuha:[], Sore:[], Lain:[] });
         const row = map.get(key);
-        if(row[r.halaqoh]) row[r.halaqoh].push(r);
+        row[['Pagi','Dhuha','Sore'].includes(r.halaqoh) ? r.halaqoh : 'Lain'].push(r);
       });
       return Array.from(map.values());
     }
@@ -3117,7 +3143,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         body.innerHTML = rows.map(r => `
           <tr>
             <td><div class="font-semibold text-gray-700">${perizinanEsc(r.hari)}</div><div class="text-xs text-gray-400">${perizinanEsc(r.tanggal)}</div></td>
-            <td><div class="font-semibold text-gray-700">${perizinanEsc(r.nama)}</div><div class="text-xs text-gray-400">${perizinanEsc(r.kelas)}</div></td>
+            <td><div class="font-semibold text-gray-700">${perizinanEsc(r.nama)}</div><div class="text-xs text-gray-400">${perizinanEsc(r.kelas)}</div>${(r.Lain && r.Lain.length) ? '<div class="text-[11px] text-amber-600 mt-1">Halaqoh lain: ' + r.Lain.map(x => perizinanEsc(x.halaqoh) + ' (' + perizinanEsc(x.tipe_izin) + ')').join(', ') + '</div>' : ''}</td>
             <td class="text-center">${perizinanCell(r.Pagi)}</td>
             <td class="text-center">${perizinanCell(r.Dhuha)}</td>
             <td class="text-center">${perizinanCell(r.Sore)}</td>
@@ -3266,6 +3292,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${gradeColor[r.nilai] || 'bg-gray-100 text-gray-600'}">${r.nilai || '-'}</span>
           </td>
           <td class="hidden md:table-cell text-sm ${statusColor[r.status] || 'text-gray-500'} font-medium">${r.status || '-'}</td>
+          <td class="hidden md:table-cell text-sm text-gray-600">${escHtml(r.kelancaran2 || '-')}</td>
           <td class="hidden md:table-cell text-xs text-gray-400">${escHtml(r.guru || '-')}</td>
           <td class="text-right pr-5 font-bold text-emerald-600">+${r.poin || 0}</td>
           ${aksiHafalan('setoran', r)}
@@ -3437,6 +3464,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
             <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${gradeColor[r.nilai] || 'bg-gray-100 text-gray-600'}">${r.nilai || '-'}</span>
           </td>
           <td class="hidden md:table-cell text-sm ${statusColor[r.status] || 'text-gray-500'} font-medium">${r.status || '-'}</td>
+          <td class="hidden md:table-cell text-sm text-gray-600">${escHtml(r.kelancaran2 || '-')}</td>
           <td class="hidden md:table-cell text-xs text-gray-400">${escHtml(r.guru || '-')}</td>
           <td class="text-right pr-5 font-bold text-emerald-600">+${r.poin || 0}</td>
           ${aksiHafalan('murojaah', r)}
@@ -4704,7 +4732,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
 
       // ── Sheet DETAIL SETORAN ─────────────────────────
       if (jenis === 'detail' || jenis === 'gabungan') {
-        const detailHeader = ['No','NISN','Nama Siswa','Kelas','Tanggal','Waktu','Juz','Surat','Ayat','Halaman','Nilai','Status','Poin','Catatan','Guru Pengoreksi'];
+        const detailHeader = ['No','NISN','Nama Siswa','Kelas','Tanggal','Waktu','Juz','Surat','Ayat','Halaman','Nilai','Status','Kelancaran','Poin','Catatan','Guru Pengoreksi'];
         const detailRows   = [];
         let no = 1;
         res.siswa
@@ -4714,7 +4742,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
               detailRows.push([
                 no++, s.nisn, s.nama, s.kelas,
                 x.tanggal, x.waktu, x.juz, x.surat, x.ayat, x.halaman || '',
-                x.nilai, x.status, x.poin, x.catatan, x.guru
+                x.nilai, x.status, x.kelancaran2 || '', x.poin, x.catatan, x.guru
               ]);
             });
           });
@@ -4723,14 +4751,14 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         const wsDetail   = XLSX.utils.aoa_to_sheet(detailData);
         wsDetail['!cols'] = [
           {wch:4},{wch:12},{wch:22},{wch:8},{wch:14},{wch:8},
-          {wch:5},{wch:18},{wch:8},{wch:10},{wch:6},{wch:18},{wch:6},{wch:30},{wch:16}
+          {wch:5},{wch:18},{wch:8},{wch:10},{wch:6},{wch:18},{wch:14},{wch:6},{wch:30},{wch:16}
         ];
         XLSX.utils.book_append_sheet(wb, wsDetail, 'Detail Setoran');
       }
 
       // ── Sheet DETAIL MUROJAAH ────────────────────────
       if (jenis === 'murojaah' || jenis === 'gabungan') {
-        const murojaahHeader = ['No','NISN','Nama Siswa','Kelas','Tanggal','Waktu','Juz','Surat','Ayat','Halaman','Nilai','Status','Poin','Catatan','Guru Pengoreksi'];
+        const murojaahHeader = ['No','NISN','Nama Siswa','Kelas','Tanggal','Waktu','Juz','Surat','Ayat','Halaman','Nilai','Status','Kelancaran','Poin','Catatan','Guru Pengoreksi'];
         const murojaahRows   = [];
         let noM = 1;
         res.siswa
@@ -4740,7 +4768,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
               murojaahRows.push([
                 noM++, s.nisn, s.nama, s.kelas,
                 x.tanggal, x.waktu, x.juz, x.surat, x.ayat, x.halaman || '',
-                x.nilai, x.status, x.poin, x.catatan, x.guru
+                x.nilai, x.status, x.kelancaran2 || '', x.poin, x.catatan, x.guru
               ]);
             });
           });
@@ -4749,7 +4777,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         const wsMurojaah   = XLSX.utils.aoa_to_sheet(murojaahData);
         wsMurojaah['!cols'] = [
           {wch:4},{wch:12},{wch:22},{wch:8},{wch:14},{wch:8},
-          {wch:5},{wch:18},{wch:8},{wch:10},{wch:6},{wch:18},{wch:6},{wch:30},{wch:16}
+          {wch:5},{wch:18},{wch:8},{wch:10},{wch:6},{wch:18},{wch:14},{wch:6},{wch:30},{wch:16}
         ];
         XLSX.utils.book_append_sheet(wb, wsMurojaah, 'Detail Murojaah');
       }
@@ -4833,7 +4861,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         thead.innerHTML = `<tr>
           <th>No</th><th>Nama Siswa</th><th>Kelas</th><th>Tanggal</th>
           <th>Juz</th><th>Surat</th><th>Ayat</th><th>Halaman</th><th>Nilai</th>
-          <th>Status</th><th>Poin</th><th>Guru</th>
+          <th>Status</th><th>Kelancaran</th><th>Poin</th><th>Guru</th>
         </tr>`;
         const rows = [];
         [...res.siswa]
@@ -4856,9 +4884,10 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
             <td>${r.x.halaman || '-'}</td>
             <td>${r.x.nilai}</td>
             <td>${r.x.status}</td>
+            <td>${escHtml(r.x.kelancaran2 || '-')}</td>
             <td class="font-bold text-emerald-600">${r.x.poin}</td>
             <td>${escHtml(r.x.guru)}</td>
-          </tr>`).join('') || `<tr><td colspan="12" class="text-center text-gray-400 py-6">Belum ada data ${isMurojaah ? 'murojaah' : 'setoran'}</td></tr>`;
+          </tr>`).join('') || `<tr><td colspan="13" class="text-center text-gray-400 py-6">Belum ada data ${isMurojaah ? 'murojaah' : 'setoran'}</td></tr>`;
         note.innerText = rows.length > LAPORAN_PREVIEW_LIMIT
           ? `Menampilkan ${shown.length} dari ${rows.length} data ${isMurojaah ? 'murojaah' : 'setoran'}. Download Excel untuk melihat semua.`
           : '';
@@ -4935,7 +4964,9 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     function loadPenilaianData() {
       // Sumber data: sheet 'penilaian' (dimuat saat login). Salinan dalam, aman dimutasi pemanggil.
       const src = appState.penilaian || { kelancaran: DEFAULT_KELANCARAN, nilai: DEFAULT_NILAI };
-      return JSON.parse(JSON.stringify(src));
+      const out = JSON.parse(JSON.stringify(src));
+      out.kelancaran2 = out.kelancaran2 || [];
+      return out;
     }
 
     function savePenilaianData(data) {
@@ -4968,7 +4999,9 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
       const nil = data.nilai.find(n => n.kode === selN.value);
       if(!kel || !nil) { label.textContent = 'Pilih target dan nilai untuk melihat poin'; return; }
       const sg = v => v > 0 ? '+' + v : String(v);
-      label.innerHTML = `Nilai ${escHtml(nil.kode)}: ${nil.poin} poin · ${escHtml(kel.nama)}: ${sg(kel.poin)} poin → <b>Total ${nil.poin + kel.poin} poin</b>`;
+      const selK2 = document.getElementById(p + 'select-kelancaran2');
+      const k2 = (data.kelancaran2 || []).find(x => selK2 && x.kode === selK2.value);
+      label.innerHTML = `Nilai ${escHtml(nil.kode)}: ${nil.poin} poin · ${escHtml(kel.nama)}: ${sg(kel.poin)} poin` + (k2 ? ` · ${escHtml(k2.kode)}: ${sg(k2.poin)} poin` : '') + ` → <b>Total ${nil.poin + kel.poin + (k2 ? k2.poin : 0)} poin</b>`;
     }
 
     // Cegah nama/kode kembar (dicek lagi di server)
@@ -4999,6 +5032,11 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         const el = document.getElementById(id);
         if (el) el.innerHTML = nilOptions || '<option value="">Belum ada opsi</option>';
       });
+      const k2Options = (data.kelancaran2 || []).map(n => `<option value="${escHtml(n.kode)}">${n.icon ? n.icon + ' ' : ''}${escHtml(n.kode)}${n.desc ? ' — ' + escHtml(n.desc) : ''} (${n.poin > 0 ? '+' + n.poin : n.poin} Poin)</option>`).join('');
+      ['select-kelancaran2', 'preview-kelancaran2', 'murojaah-select-kelancaran2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = k2Options || '<option value="">Belum ada opsi</option>';
+      });
       updatePoinPreview(false);
       updatePoinPreview(true);
     }
@@ -5008,6 +5046,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
       const data = loadPenilaianData();
       renderKelancaran(data.kelancaran);
       renderNilai(data.nilai);
+      renderKelancaran2(data.kelancaran2);
       refreshPenilaianSelects();
     }
 
@@ -5218,9 +5257,88 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
       });
     });
 
+    // ── KELANCARAN (kolom ketiga penilaian) ──
+    function renderKelancaran2(list) {
+      const el = document.getElementById('list-kelancaran2');
+      const badge = document.getElementById('badge-kelancaran2');
+      if (!el) return;
+      badge.textContent = list.length + ' item';
+      if (!list.length) {
+        el.innerHTML = '<div class="text-center py-6 text-gray-300"><i class="fa-solid fa-inbox text-2xl block mb-1"></i><span class="text-sm">Belum ada opsi. Tambahkan di bawah.</span></div>';
+        return;
+      }
+      el.innerHTML = list.map((n, i) => {
+        const pl = n.poin > 0 ? '<span class="text-emerald-600 font-bold">+' + n.poin + '</span>' : n.poin < 0 ? '<span class="text-red-500 font-bold">' + n.poin + '</span>' : '<span class="text-gray-400 font-bold">0</span>';
+        return `
+        <div class="penilaian-row flex items-center gap-3 bg-white border border-gray-100 rounded-xl px-4 py-3 group hover:border-sky-200 hover:shadow-sm transition">
+          <div class="min-w-[2rem] h-8 px-2 rounded-lg bg-sky-50 border border-sky-100 flex items-center justify-center font-bold text-sky-700 text-sm flex-shrink-0">${escHtml(n.kode)}</div>
+          <div class="flex-1 min-w-0" id="view-kel2-${i}">
+            <div class="font-semibold text-gray-800 text-sm">${n.icon || ''} ${escHtml(n.desc || n.kode)}</div>
+            <div class="text-xs text-gray-400">Kode: <b>${escHtml(n.kode)}</b> · Poin: ${pl}</div>
+          </div>
+          <div class="flex-1 min-w-0 hidden" id="edit-kel2-${i}">
+            <div class="grid grid-cols-3 gap-2">
+              <input class="form-input text-xs py-1.5" id="edit-kel2-kode-${i}" value="${escHtml(n.kode)}" placeholder="Kode" maxlength="20">
+              <input class="form-input text-xs py-1.5" id="edit-kel2-desc-${i}" value="${escHtml(n.desc || '')}" placeholder="Deskripsi" maxlength="60">
+              <input class="form-input text-xs py-1.5" id="edit-kel2-poin-${i}" type="number" value="${n.poin}" placeholder="Poin">
+            </div>
+          </div>
+          <div class="flex gap-1.5 flex-shrink-0">
+            <button class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-sky-100 hover:text-sky-700 text-gray-400 transition flex items-center justify-center text-xs" onclick="toggleEditKel2(${i})" id="btn-edit-kel2-${i}" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-sky-100 hover:text-sky-700 text-gray-400 transition items-center justify-center text-xs hidden" onclick="saveEditKel2(${i})" id="btn-save-kel2-${i}" title="Simpan"><i class="fa-solid fa-check"></i></button>
+            <button class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-red-100 hover:text-red-500 text-gray-400 transition flex items-center justify-center text-xs" onclick="deleteKelancaran2(${i})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function addKelancaran2() {
+      const kode = document.getElementById('add-kel2-kode').value.trim();
+      const desc = document.getElementById('add-kel2-desc').value.trim();
+      const poin = parseInt(document.getElementById('add-kel2-poin').value) || 0;
+      if (!kode) { showToast('Kode / nama KELANCARAN wajib diisi!', 'warning'); return; }
+      const data = loadPenilaianData();
+      if (penilaianKembar(data.kelancaran2, 'kode', kode, -1)) { showToast('Kode KELANCARAN sudah ada!', 'warning'); return; }
+      data.kelancaran2.push({ id: 'kl2-' + Date.now(), kode, desc, poin, icon: poin > 0 ? '🟢' : poin < 0 ? '🔴' : '🟡' });
+      savePenilaianData(data);
+      renderKelancaran2(data.kelancaran2);
+      ['add-kel2-kode', 'add-kel2-desc', 'add-kel2-poin'].forEach(id => { document.getElementById(id).value = ''; });
+      showToast('Opsi KELANCARAN ditambahkan!', 'success');
+    }
+
+    function deleteKelancaran2(i) {
+      if (!confirm('Hapus opsi ini? Data lama yang memakainya tetap tersimpan.')) return;
+      const data = loadPenilaianData();
+      data.kelancaran2.splice(i, 1);
+      savePenilaianData(data);
+      renderKelancaran2(data.kelancaran2);
+      showToast('Opsi dihapus', 'success');
+    }
+
+    function toggleEditKel2(i) {
+      const view = document.getElementById('view-kel2-' + i), edit = document.getElementById('edit-kel2-' + i);
+      const be = document.getElementById('btn-edit-kel2-' + i), bs = document.getElementById('btn-save-kel2-' + i);
+      const editing = !edit.classList.contains('hidden');
+      view.classList.toggle('hidden', !editing); edit.classList.toggle('hidden', editing);
+      be.classList.toggle('hidden', !editing); bs.classList.toggle('hidden', editing); bs.classList.toggle('flex', !editing);
+    }
+
+    function saveEditKel2(i) {
+      const kode = document.getElementById('edit-kel2-kode-' + i).value.trim();
+      const desc = document.getElementById('edit-kel2-desc-' + i).value.trim();
+      const poin = parseInt(document.getElementById('edit-kel2-poin-' + i).value) || 0;
+      if (!kode) { showToast('Kode tidak boleh kosong!', 'warning'); return; }
+      const data = loadPenilaianData();
+      if (penilaianKembar(data.kelancaran2, 'kode', kode, i)) { showToast('Kode KELANCARAN sudah ada!', 'warning'); return; }
+      data.kelancaran2[i] = { ...data.kelancaran2[i], kode, desc, poin, icon: poin > 0 ? '🟢' : poin < 0 ? '🔴' : '🟡' };
+      savePenilaianData(data);
+      renderKelancaran2(data.kelancaran2);
+      showToast('KELANCARAN diperbarui!', 'success');
+    }
+
     function resetPenilaianToDefault() {
       if (!confirm('Reset semua penilaian ke pengaturan default?')) return;
-      savePenilaianData({ kelancaran: JSON.parse(JSON.stringify(DEFAULT_KELANCARAN)), nilai: JSON.parse(JSON.stringify(DEFAULT_NILAI)) });
+      savePenilaianData({ kelancaran: JSON.parse(JSON.stringify(DEFAULT_KELANCARAN)), nilai: JSON.parse(JSON.stringify(DEFAULT_NILAI)), kelancaran2: loadPenilaianData().kelancaran2 });
       renderPenilaianPage();
       showToast('Penilaian direset ke default!', 'success');
     }
@@ -5832,6 +5950,8 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     const kel=pn.kelancaran.map(k=>({v:k.nama,t:`${k.nama} (${sg(k.poin)} poin)`}));
     if(!nil.some(x=>x.v===r.nilai))nil.push({v:r.nilai,t:r.nilai+' (lama)'});
     if(!kel.some(x=>x.v===r.status))kel.push({v:r.status,t:r.status+' (lama)'});
+    const kl2=[{v:'',t:'— belum diisi —'}].concat((pn.kelancaran2||[]).map(k=>({v:k.kode,t:k.kode+(k.desc?' — '+k.desc:'')+' ('+sg(k.poin)+' poin)'})));
+    if(r.kelancaran2&&!kl2.some(x=>x.v===r.kelancaran2))kl2.push({v:r.kelancaran2,t:r.kelancaran2+' (lama)'});
     const sr=SURAT_DATA.map(x=>({v:x.latin,t:x.no+'. '+x.latin}));
     const pt=String(r.surat||'').split(' - ');
     const juz=Array.from({length:30},(_,i)=>({v:i+1,t:'Juz '+(i+1)}));
@@ -5845,24 +5965,26 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
         <div><label>Ayat sampai</label><input id="em-as" type="number" min="1" class="form-input" value="${E(r.ayat_sampai)}"></div>
         <div><label>Nilai</label><select id="em-nil" class="form-input">${opt(nil,r.nilai)}</select></div>
         <div><label>Target Perhalaqoh</label><select id="em-kel" class="form-input">${opt(kel,r.status)}</select></div>
+        <div><label>KELANCARAN</label><select id="em-kel2" class="form-input">${opt(kl2,r.kelancaran2||'')}</select></div>
         <div class="full"><label>Catatan</label><textarea id="em-cat" rows="2" class="form-input" maxlength="500">${E(r.catatan)}</textarea></div>
         <div class="full em-poin" id="em-poin"></div>
       </div>
       <div class="em-foot"><button type="button" class="btn-secondary" onclick="emClose()">Batal</button><button type="button" class="btn-primary em-save">Simpan</button></div>`);
     const calc=()=>{
-      const same=q('em-nil').value===String(r.nilai)&&q('em-kel').value===String(r.status);
+      const same=q('em-nil').value===String(r.nilai)&&q('em-kel').value===String(r.status)&&q('em-kel2').value===String(r.kelancaran2||'');
       const n=pn.nilai.find(x=>x.kode===q('em-nil').value),k=pn.kelancaran.find(x=>x.nama===q('em-kel').value);
-      const baru=same?Number(r.poin)||0:(n&&k?n.poin+k.poin:null);
+      const k2=(pn.kelancaran2||[]).find(x=>x.kode===q('em-kel2').value);
+      const baru=same?Number(r.poin)||0:(n&&k?n.poin+k.poin+(k2?k2.poin:0):null);
       q('em-poin').textContent=baru===null?'Kategori tidak ditemukan':('Poin: '+baru+(baru!==(Number(r.poin)||0)?'  (sebelumnya '+r.poin+')':''));
     };
-    ['em-nil','em-kel'].forEach(i=>q(i).addEventListener('change',calc));calc();
+    ['em-nil','em-kel','em-kel2'].forEach(i=>q(i).addEventListener('change',calc));calc();
     box.querySelector('.em-save').onclick=()=>{
       const hv=(j==='setoran'?normalizeHalamanSetoran:normalizeHalaman)(q('em-hal').value);if(!hv.ok){showToast(hv.msg,'warning');return}
       const s1=q('em-s1').value,s2=q('em-s2').value,surat=(s2&&s2!==s1)?s1+' - '+s2:s1;
       const ad=parseInt(q('em-ad').value,10),as=parseInt(q('em-as').value,10);
       if(!(ad>=1)||!(as>=1)){showToast('Ayat harus berupa angka 1 atau lebih!','warning');return}
       if(!surat.includes(' - ')&&ad>as){showToast('Ayat awal tidak boleh lebih besar dari ayat akhir!','warning');return}
-      run(j==='setoran'?'updateSetoran':'updateMurojaah',[id,{juz:q('em-juz').value,surat:surat,ayat_dari:ad,ayat_sampai:as,halaman:hv.value,nilai:q('em-nil').value,status:q('em-kel').value,catatan:q('em-cat').value}],reload(j));
+      run(j==='setoran'?'updateSetoran':'updateMurojaah',[id,{juz:q('em-juz').value,surat:surat,ayat_dari:ad,ayat_sampai:as,halaman:hv.value,nilai:q('em-nil').value,status:q('em-kel').value,kelancaran2:q('em-kel2').value,catatan:q('em-cat').value}],reload(j));
     };
   };
 
@@ -5927,11 +6049,11 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
 
   function render(){
     const tb=el('lb-body');
-    if(!rows.length){tb.innerHTML='<tr><td colspan="17" class="text-center text-gray-400 py-8">Tidak ada siswa di kelas ini</td></tr>';return}
+    if(!rows.length){tb.innerHTML='<tr><td colspan="18" class="text-center text-gray-400 py-8">Tidak ada siswa di kelas ini</td></tr>';return}
     const c=v=>(v===''||v==null)?'<span class="text-gray-300">-</span>':E(v);
     tb.innerHTML=rows.map((r,i)=>{
       const n=r.nilai||{},h=hitung(r.nilai);
-      return `<tr><td>${i+1}</td><td class="font-semibold">${E(r.nama)}</td><td>${hafalanTxt(r.hal)}</td><td>${E(r.surat_terakhir)||'-'}</td><td>${r.hal?fmt(r.hal):'-'}</td><td>${r.juz.length?E(r.juz.join(', ')):'-'}</td>`
+      return `<tr><td>${i+1}</td><td class="font-semibold">${E(r.nama)}</td><td>${hafalanTxt(r.hal)}</td><td>${E(r.surat_terakhir)||'-'}</td><td>${E(r.kelancaran)||'-'}</td><td>${r.hal?fmt(r.hal):'-'}</td><td>${r.juz.length?E(r.juz.join(', ')):'-'}</td>`
         +ASP.map(a=>`<td>${c(n[a[0]])}</td>`).join('')
         +`<td class="font-bold">${h?fmt(h.jml):'-'}</td><td class="font-bold">${h?fmt(h.rata):'-'}</td><td>${h?`<span class="badge" style="background:#d1fae5;color:#065f46">${h.pred}</span>`:'<span class="text-gray-300">Belum dinilai</span>'}</td><td>${r.izin||0}</td><td class="max-w-[180px] truncate">${E(n.catatan)||'-'}</td>`
         +`<td><button type="button" class="em-btn" title="Input nilai" onclick="inputNilaiBulanan(${i})"><i class="fa-solid fa-pen-to-square"></i></button></td></tr>`;
@@ -5973,12 +6095,12 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     doc.setFont('helvetica','bold');doc.setFontSize(11);
     doc.text('HALAQAH USTADZAH '+(el('lb-ustadzah').value.trim()||'..............................'),10,12);
     doc.text('BULAN '+bulanLabel().toUpperCase(),287,12,{align:'right'});
-    const w=[8,40,20,26,14,16,13,13,13,13,17,13,13,22,10,26],cs={};
-    w.forEach((x,i)=>cs[i]={cellWidth:x});cs[1].halign='left';cs[15].halign='left';
+    const w=[8,35,20,23,13,14,15,13,13,13,13,17,13,13,22,10,22],cs={};
+    w.forEach((x,i)=>cs[i]={cellWidth:x});cs[1].halign='left';cs[16].halign='left';
     const v=x=>(x===''||x==null)?'-':fmt(+x);
     doc.autoTable({
-      head:[['NO','NAMA','JUMLAH\nHAFALAN','SURAT\nTERAKHIR','ZIYADAH\n(HAL)','MUROJAAH\n(JUZ)','HAFALAN','BACAAN','TAJWID','ETIKA','KESUNG-\nGUHAN','JUMLAH','RATA\nRATA','PREDIKAT','IZIN','CATATAN']],
-      body:rows.map((r,i)=>{const n=r.nilai||{},h=hitung(r.nilai);return [i+1,r.nama,hafalanTxt(r.hal),r.surat_terakhir||'-',r.hal?fmt(r.hal):'-',r.juz.join(', ')||'-',v(n.hafalan),v(n.bacaan),v(n.tajwid),v(n.etika),v(n.kesungguhan),h?fmt(h.jml):'-',h?fmt(h.rata):'-',h?h.pred:'-',r.izin||0,n.catatan||'']}),
+      head:[['NO','NAMA','JUMLAH\nHAFALAN','SURAT\nTERAKHIR','KELANCARAN','ZIYADAH\n(HAL)','MUROJAAH\n(JUZ)','HAFALAN','BACAAN','TAJWID','ETIKA','KESUNG-\nGUHAN','JUMLAH','RATA\nRATA','PREDIKAT','IZIN','CATATAN']],
+      body:rows.map((r,i)=>{const n=r.nilai||{},h=hitung(r.nilai);return [i+1,r.nama,hafalanTxt(r.hal),r.surat_terakhir||'-',r.kelancaran||'-',r.hal?fmt(r.hal):'-',r.juz.join(', ')||'-',v(n.hafalan),v(n.bacaan),v(n.tajwid),v(n.etika),v(n.kesungguhan),h?fmt(h.jml):'-',h?fmt(h.rata):'-',h?h.pred:'-',r.izin||0,n.catatan||'']}),
       startY:16,theme:'grid',margin:{left:10,right:10},
       styles:{font:'helvetica',fontSize:8,cellPadding:1.6,halign:'center',valign:'middle',lineColor:[0,0,0],lineWidth:0.2,textColor:0},
       headStyles:{fillColor:[255,255,255],textColor:0,fontStyle:'bold'},columnStyles:cs

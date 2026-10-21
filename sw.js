@@ -2,7 +2,7 @@
 // - Berkas milik sendiri (index.html, api.js, ikon): jaringan dulu (maks 4 dtk), cadangan dari cache.
 // - Library CDN (Tailwind, Chart.js, jsPDF, font, dll): disimpan saat pertama dibuka online, lalu dipakai offline.
 // - Data API (Apps Script) tidak lewat sini; cache datanya diurus api.js.
-const CACHE = 'tahfizh-pwa-v3';
+const CACHE = 'tahfizh-pwa-v4';
 const SHELL = ['./', './index.html', './api.js', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon.png'];
 const CDN = [
   'https://cdn.tailwindcss.com',
