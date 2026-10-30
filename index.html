@@ -6129,11 +6129,12 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
   const siswaNama=n=>{const s=(appState.siswaList||[]).find(x=>String(x.nisn)===String(n));return s?s.nama:'NISN '+n};
   const labelOf=(t,f)=>t==='perizinan'?(f.tipe_izin+' · Halaqoh '+f.halaqoh):(f.surat+' ayat '+f.ayat_dari+'-'+f.ayat_sampai);
 
-  function enqueue(type,form){
-    const it={cid:cid(),type:type,ts:Date.now(),owner:me(),form:form,nama:form.nama_siswa||siswaNama(form.nisn),label:labelOf(type,form),status:'pending'};
+  function enqueue(type,form,status){
+    const it={cid:cid(),type:type,ts:Date.now(),owner:me(),form:form,nama:form.nama_siswa||siswaNama(form.nisn),label:labelOf(type,form),status:status||'pending',sendAt:Date.now()};
     const a=load();a.push(it);save(a);return it;
   }
   function removeCid(c){save(load().filter(i=>i.cid!==c))}
+  function setStatus(c,st){save(load().map(i=>{if(i.cid===c){i.status=st;i.sendAt=Date.now()}return i}))}
 
   function callSync(items){
     return new Promise((resolve,reject)=>{
@@ -6164,7 +6165,7 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     try{
       purge();
       if(manual){save(load().map(i=>{if(i.owner===me()&&i.status==='failed'){i.status='pending';delete i.err}return i}))}
-      const todo=mine().filter(i=>i.status==='pending');
+      const todo=mine().filter(i=>i.status==='pending'||(i.status==='sending'&&Date.now()-(i.sendAt||0)>90000)); // 'sending' = sedang dikirim; baru diulang bila macet >90 dtk
       while(todo.length){
         const batch=todo.splice(0,BATCH);
         let r;
@@ -6182,9 +6183,15 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
   window.syncPendingNow=()=>syncAll(true);
 
   // Dipakai tiga formulir input. onOk(res): res=null berarti disimpan di antrean.
+  let submitting=false; // cegah Simpan ditekan dua kali saat masih menunggu server
   window.submitQueued=async function(type,form,onOk){
-    const it=enqueue(type,form);
-    const queued=msg=>{showLoading(false);showToast(msg,'warning');onOk(null)};
+    if(submitting)return;
+    submitting=true;
+    try{await submitOne(type,form,onOk)}finally{submitting=false}
+  };
+  async function submitOne(type,form,onOk){
+    const it=enqueue(type,form,'sending'); // ditandai 'sending' agar pengiriman otomatis tidak ikut mengambilnya
+    const queued=msg=>{setStatus(it.cid,'pending');showLoading(false);showToast(msg,'warning');onOk(null)};
     if(navigator.onLine===false){queued('Tidak ada internet. Data disimpan di HP dan dikirim otomatis saat online.');return}
     showLoading(true);
     let r;
@@ -6192,10 +6199,11 @@ body.is-staff th.staff-only,body.is-staff td.staff-only{display:table-cell}
     showLoading(false);
     if(!r||r.status!=='success'){removeCid(it.cid);showToast((r&&r.message)||'Gagal menyimpan','error');return}
     const res=r.results[0];
-    if(res.status==='success'||res.status==='duplicate'){removeCid(it.cid);showToast(res.message,'success');onOk(res);return}
+    if(res.status==='success'){removeCid(it.cid);showToast(res.message,'success');onOk(res);return}
+    if(res.status==='duplicate'){removeCid(it.cid);showToast(res.message||'Data sudah tersimpan sebelumnya.','warning');onOk(null);return}
     if(res.retry){queued('Server sedang sibuk. Data disimpan di HP dan dikirim otomatis.');return}
     removeCid(it.cid);showToast(res.message,'error'); // gagal validasi: tidak masuk antrean, isian tetap di formulir
-  };
+  }
 
   // ---- tampilan ----
   const css=document.createElement('style');
